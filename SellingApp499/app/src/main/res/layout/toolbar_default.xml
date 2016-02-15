@@ -3,14 +3,17 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="?attr/colorPrimary"
-    android:minHeight="@dimen/abc_action_bar_default_height_material" >
+    android:elevation="6dp"
+    android:minHeight="@dimen/abc_action_bar_default_height_material">
 
-    <TextView
+    <ImageView
+        android:id="@+id/toolbar_title"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/app_name"
-        android:gravity = "center"
-        android:textSize="32sp"
-        android:id="@+id/toolbar_title" />
+        android:layout_height="40dp"
+        android:adjustViewBounds="false"
+        android:gravity="center"
+        android:scaleType="fitCenter"
+        android:contentDescription="@string/app_name"
+        android:src="@drawable/selltaptoolbar" />
 
 </android.support.v7.widget.Toolbar>

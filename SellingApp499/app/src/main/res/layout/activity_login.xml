@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="eulee.sellingapp499.LoginActivity">
+    tools:context=".Log_inActivity">
 
     <include
         android:id="@+id/toolbar_actionbar"

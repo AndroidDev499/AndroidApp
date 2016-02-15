@@ -6,13 +6,14 @@
         android:title="@string/action_message"
         app:showAsAction="ifRoom"
         android:icon="@drawable/message"
-        android:onClick="clickedMessage"/>
+        android:onClick="clickedAlphaMessage"/>
 
     <item
         android:id="@+id/action_search"
         android:title="@string/action_search"
         app:showAsAction="ifRoom"
-        android:icon="@drawable/search"/>
+        android:icon="@drawable/search"
+        android:onClick="clickedAlphaMessage"/>
 
 
 </menu>
