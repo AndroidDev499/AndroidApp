@@ -5,7 +5,8 @@ android {
     buildToolsVersion "23.0.2"
 
     defaultConfig {
-        applicationId "eulee.sellingapp499"
+        //applicationId "eulee.sellingapp499"
+        applicationId "eulee.AndroidSellTap"
         minSdkVersion 21
         targetSdkVersion 23
         versionCode 1
