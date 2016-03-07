@@ -1,4 +1,4 @@
-# AndroidApp
+# SellTap
 
 *Sell what you need to sell to people who want them most!*
 
