@@ -15,7 +15,7 @@ public class SellTapOffer {
     private String title;
     private java.util.Date updated;
     private java.util.Date created;
-    private int Price;
+    private int price;
     private String image1;
     private String description;
     private String userCreated;
@@ -60,7 +60,7 @@ public class SellTapOffer {
     }
 
     public String getUserCreated() {
-        return userCreated.toString();
+        return userCreated;
     }
 
     public void setUserCreated(BackendlessUser userCreated) {
@@ -68,11 +68,11 @@ public class SellTapOffer {
     }
 
     public int getPrice() {
-        return Price;
+        return price;
     }
 
     public void setPrice(int price) {
-        Price = price;
+        this.price = price;
     }
 
     public String getImage1() {
@@ -132,7 +132,7 @@ public class SellTapOffer {
     }
 
 
-    public static void getAllRecipes(AsyncCallback<BackendlessCollection<SellTapOffer>> callback) {
+    public static void getAllOffers(AsyncCallback<BackendlessCollection<SellTapOffer>> callback) {
         Backendless.Data.of(SellTapOffer.class).find(callback);
     }
 

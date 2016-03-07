@@ -1,5 +1,6 @@
 package eulee.AndroidSellTap.LoginCreate;
 
+import com.backendless.Backendless;
 import com.backendless.BackendlessUser;
 
 public class SellTapUser extends BackendlessUser

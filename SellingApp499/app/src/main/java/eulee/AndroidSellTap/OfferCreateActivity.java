@@ -24,6 +24,7 @@ import com.backendless.files.BackendlessFile;
 
 import eulee.AndroidSellTap.Backend.Defaults;
 import eulee.AndroidSellTap.LoginCreate.SellTapOffer;
+import eulee.AndroidSellTap.LoginCreate.SellTapUser;
 import eulee.sellingapp499.R;
 
 public class OfferCreateActivity extends AppCompatActivity {
@@ -113,12 +114,12 @@ public class OfferCreateActivity extends AppCompatActivity {
                 new AsyncCallback<BackendlessFile>() {
                     @Override
                     public void handleResponse(BackendlessFile response) {
-                        Toast.makeText(getApplicationContext(), "Picture Taken", Toast.LENGTH_LONG).show();
+                        //Toast.makeText(getApplicationContext(), "Picture Taken", Toast.LENGTH_LONG).show();
                     }
 
                     @Override
                     public void handleFault(BackendlessFault fault) {
-                        Toast.makeText(OfferCreateActivity.this, fault.toString(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(OfferCreateActivity.this, fault.toString(), Toast.LENGTH_LONG).show();
                     }
                 });
     }

@@ -10,13 +10,13 @@
         android:onClick="clickedAlphaMessage"/>
 
         -->
-
+    <!--
     <item
         android:id="@+id/action_search"
         android:title="@string/action_search"
         app:showAsAction="ifRoom"
         android:icon="@drawable/menu_search"
         android:onClick="clickedAlphaMessage"/>
-
+        -->
 
 </menu>

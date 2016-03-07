@@ -9,6 +9,7 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.backendless.Backendless;
 import com.squareup.picasso.Picasso;
 
 import org.w3c.dom.Text;
@@ -67,11 +68,11 @@ public class OfferAdapter extends BaseAdapter {
             holder = (DashboardRowDataHolder) row.getTag();
         }
 
-        //Set Image and recipe name
         String filename = offers.get(position).getImage1();
         Picasso.with(context).load(filename).fit().into(holder.offerImage);
         holder.offerName.setText(offers.get(position).getTitle());
-        //holder.offerCreator.setText(offers.get(position).getUserCreated().toString());
+        holder.offerCreator.setText(Backendless.UserService.toString());
+
 
         //Set Onclick event for Image or TextView too
         holder.offerName.setOnClickListener(new View.OnClickListener() {

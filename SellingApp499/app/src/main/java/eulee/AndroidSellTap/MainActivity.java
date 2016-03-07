@@ -2,42 +2,23 @@ package eulee.AndroidSellTap;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.Resources;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 
-import android.os.Handler;
-import android.os.Message;
-import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.BaseAdapter;
 import android.widget.GridView;
-import android.widget.ImageButton;
-import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.backendless.Backendless;
 import com.backendless.BackendlessCollection;
-import com.backendless.async.callback.AsyncCallback;
-import com.backendless.exceptions.BackendlessFault;
-import com.backendless.persistence.BackendlessDataQuery;
-import com.backendless.persistence.QueryOptions;
 
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -87,6 +68,8 @@ public class MainActivity extends AppCompatActivity
         mNavigationDrawerFragment.setup(R.id.fragment_drawer, (DrawerLayout) findViewById(R.id.drawer), mToolbar);
 
         this.loaded = true; // without this line, onNavigationDrawerItemSelected will run first for some reason
+        
+        isOnline();
 
         initOfferList();
         offerGridView = (GridView) findViewById(R.id.gridView);
@@ -97,8 +80,19 @@ public class MainActivity extends AppCompatActivity
 
     }
 
+    private boolean isOnline() {
+        ConnectivityManager conMgr = (ConnectivityManager) getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo netInfo = conMgr.getActiveNetworkInfo();
+
+        if(netInfo == null || !netInfo.isConnected() || !netInfo.isAvailable()){
+            Toast.makeText(this, "No Internet connection!", Toast.LENGTH_LONG).show();
+            return false;
+        }
+        return true;
+    }
+
     private void initOfferList() {
-        SellTapOffer.getAllRecipes(new LoadingCallback<BackendlessCollection<SellTapOffer>>(this, "Getting Offers", true) {
+        SellTapOffer.getAllOffers(new LoadingCallback<BackendlessCollection<SellTapOffer>>(this, "Getting Offers", true) {
             @Override
             public void handleResponse(BackendlessCollection<SellTapOffer> loadedoffers) {
                 mBackendlessCollection = loadedoffers;
@@ -117,10 +111,10 @@ public class MainActivity extends AppCompatActivity
 //        navigateToOffer(offer);
 //    }
 
-    private void navigateToRecipeDetails(SellTapOffer offer) {
-        Intent recipeDetailIntent = new Intent(MainActivity.this, ViewOfferActivity.class);
-        recipeDetailIntent.putExtra("offerId", offer.getObjectId());
-        startActivity(recipeDetailIntent);
+    private void navigateToOffer(SellTapOffer offer) {
+        Intent offerDetail = new Intent(MainActivity.this, ViewOfferActivity.class);
+        offerDetail.putExtra("offerId", offer.getObjectId());
+        startActivity(offerDetail);
     }
 
     private void convertToList( BackendlessCollection<SellTapOffer> nextPage )
@@ -151,25 +145,23 @@ public class MainActivity extends AppCompatActivity
                 }
 
                 break;
-            case 1:
+            //case 1:
                 //Intent intent1 = new Intent(this,MainActivity.class);
                 //startActivity(intent1);
-                Toast.makeText(this, R.string.AlphaDisabled, Toast.LENGTH_SHORT).show();
-                break;
-            case 2:
+            //    Toast.makeText(this, R.string.AlphaDisabled, Toast.LENGTH_SHORT).show();
+            //    break;
+            //case 2:
                 //Intent intent2 = new Intent(this, SettingsActivity.class);
                 //startActivity(intent2);
-                Toast.makeText(this, R.string.AlphaDisabled, Toast.LENGTH_SHORT).show();
-                break;
-            case 3:
+            //    Toast.makeText(this, R.string.AlphaDisabled, Toast.LENGTH_SHORT).show();
+            //    break;
+            case 1:
                 Intent intent3 = new Intent(this, LoginActivity.class);
                 startActivity(intent3);
                 break;
-            case 4:
+            case 2:
                 Intent intent4 = new Intent(this, RegisterActivity.class);
                 startActivity(intent4);
-                break;
-            case 5:
                 break;
         }
     }
@@ -207,11 +199,11 @@ public class MainActivity extends AppCompatActivity
         //noinspection SimplifiableIfStatement
         /*if (id == R.id.action_message) {
             return true;
-        }*/
+        }
 
         if (id == R.id.action_search) {
             return true;
-        }
+        }*/
 
         return super.onOptionsItemSelected(item);
     }
