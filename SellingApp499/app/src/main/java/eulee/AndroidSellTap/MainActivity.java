@@ -1,28 +1,50 @@
 package eulee.AndroidSellTap;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 
+import android.os.Handler;
+import android.os.Message;
+import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.BaseAdapter;
 import android.widget.GridView;
+import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.backendless.Backendless;
 import com.backendless.BackendlessCollection;
+import com.backendless.async.callback.AsyncCallback;
+import com.backendless.exceptions.BackendlessFault;
+import com.backendless.persistence.BackendlessDataQuery;
+import com.backendless.persistence.QueryOptions;
 
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import eulee.AndroidSellTap.Backend.LoadingCallback;
+import eulee.AndroidSellTap.LoginCreate.OfferAdapter;
 import eulee.AndroidSellTap.LoginCreate.SellTapOffer;
 import eulee.AndroidSellTap.LoginCreate.LoginActivity;
-import eulee.AndroidSellTap.LoginCreate.OfferAdapter;
 import eulee.AndroidSellTap.LoginCreate.RegisterActivity;
 import eulee.AndroidSellTap.NavDrawer.NavigationDrawerCallbacks;
 import eulee.AndroidSellTap.NavDrawer.NavigationDrawerFragment;
@@ -40,17 +62,20 @@ public class MainActivity extends AppCompatActivity
     private Toolbar mToolbar;
     private Boolean loaded = false;
 
-    private BackendlessCollection<SellTapOffer> sellTapOffers;
-    private List<SellTapOffer> totalSellTapOffers = new ArrayList<>();
-    private boolean isLoadingItems = false;
-    private OfferAdapter adapter;
+    public static final String APP_ID = "67F33700-EAE2-361A-FFF6-876070706F00";
+    public static final String SECRET_KEY = "331462D8-BB79-FE20-FF8E-8FE74A20F000";
+    public static final String VERSION = "v1";
 
-    GridView gridview;
+    private BackendlessCollection<SellTapOffer> mBackendlessCollection;
+    private GridView offerGridView;
+    private OfferAdapter adapter;
+    private List<SellTapOffer> offerList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        Backendless.initApp(this, APP_ID, SECRET_KEY, VERSION);
         mToolbar = (Toolbar) findViewById(R.id.toolbar_actionbar);
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
@@ -61,86 +86,47 @@ public class MainActivity extends AppCompatActivity
         // Set up the drawer.
         mNavigationDrawerFragment.setup(R.id.fragment_drawer, (DrawerLayout) findViewById(R.id.drawer), mToolbar);
 
-        String appVersion = "v1";
-        Backendless.initApp(this, "67F33700-EAE2-361A-FFF6-876070706F00", "331462D8-BB79-FE20-FF8E-8FE74A20F000", appVersion);
+        this.loaded = true; // without this line, onNavigationDrawerItemSelected will run first for some reason
 
-        // without this line, onNavigationDrawerItemSelected will run first for some reason
-        this.loaded = true;
-/*
-        adapter = new OfferAdapter(MainActivity.this, R.layout.grid_item_offer, totalSellTapOffers);
-        setListAdapter (adapter);
+        initOfferList();
+        offerGridView = (GridView) findViewById(R.id.gridView);
+        adapter = new OfferAdapter(this, offerList);
+        offerGridView.setAdapter(adapter);
+        //offerGridView.setOnItemClickListener();
 
-        QueryOptions queryOptions = new QueryOptions();
-        queryOptions.setRelated(Arrays.asList("title"));
 
-        BackendlessDataQuery query = new BackendlessDataQuery(queryOptions);
+    }
 
-        Backendless.Data.of(SellTapOffer.class).find(query, new LoadingCallback<BackendlessCollection<SellTapOffer>>(this, "Loading offers...", true) {
+    private void initOfferList() {
+        SellTapOffer.getAllRecipes(new LoadingCallback<BackendlessCollection<SellTapOffer>>(this, "Getting Offers", true) {
             @Override
-            public void handleResponse(BackendlessCollection<SellTapOffer> sellTapOfferBackendlessCollection) {
-                sellTapOffers = sellTapOfferBackendlessCollection;
-                addMoreItems(sellTapOfferBackendlessCollection);
-                super.handleResponse(sellTapOfferBackendlessCollection);
+            public void handleResponse(BackendlessCollection<SellTapOffer> loadedoffers) {
+                mBackendlessCollection = loadedoffers;
+
+                convertToList(loadedoffers);
+
+                super.handleResponse(loadedoffers);
             }
         });
 
-        GridView gridView = (GridView) findViewById(R.id.gridView);
-        gridView.setOnScrollListener(new AbsListView.OnScrollListener() {
-            @Override
-            public void onScrollStateChanged(AbsListView view, int scrollState) {
-
-            }
-
-            @Override
-            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-                {
-                    if (needToLoadItems(firstVisibleItem, visibleItemCount, totalItemCount)) {
-                        isLoadingItems = true;
-
-                        sellTapOffers.nextPage(new LoadingCallback<BackendlessCollection<SellTapOffer>>(MainActivity.this) {
-                            @Override
-                            public void handleResponse(BackendlessCollection<SellTapOffer> nextPage) {
-                                sellTapOffers = nextPage;
-
-                                addMoreItems(nextPage);
-
-                                isLoadingItems = false;
-                            }
-                        });
-                    }
-                }
-            }
-
-        }); */     //figure out how to make this work with listactivity
     }
 
-    /**
-     * Determines whether is it needed to load more items as user scrolls down.
-     *
-     * @param firstVisibleItem number of the first item visible on screen
-     * @param visibleItemCount number of items visible on screen
-     * @param totalItemCount   total number of items in list
-     * @return true if user is about to reach the end of a list, else false
-     */
-    private boolean needToLoadItems(int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-        return !isLoadingItems && totalItemCount != 0 && totalItemCount - (visibleItemCount + firstVisibleItem) < visibleItemCount / 2;
+//    @Override
+//    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+//        final SellTapOffer offer = offerList.get(position);
+//        navigateToOffer(offer);
+//    }
+
+    private void navigateToRecipeDetails(SellTapOffer offer) {
+        Intent recipeDetailIntent = new Intent(MainActivity.this, ViewOfferActivity.class);
+        recipeDetailIntent.putExtra("offerId", offer.getObjectId());
+        startActivity(recipeDetailIntent);
     }
 
-    /**
-     * Adds more items to list and notifies Android that dataset has changed.
-     *
-     * @param nextPage list of new items
-     */
-    private void addMoreItems(BackendlessCollection<SellTapOffer> nextPage) {
-        totalSellTapOffers.addAll(nextPage.getCurrentPage());
+    private void convertToList( BackendlessCollection<SellTapOffer> nextPage )
+    {
+        offerList.addAll(nextPage.getCurrentPage());
         adapter.notifyDataSetChanged();
-    }
-
-    //@Override
-    protected void onListItemClick(GridView l, View v, int position, long id) {
-        Intent showOfferDetails = new Intent(this, SellTapOfferListingActivity.class);
-        //showOfferDetails.putExtra( "offer", totalSellTapOffers.get(position));
-        startActivity (showOfferDetails);
     }
 
     @Override
@@ -155,8 +141,15 @@ public class MainActivity extends AppCompatActivity
 
         switch (position) {
             case 0:
-                Intent intent0 = new Intent(this, OfferCreateActivity.class);
-                startActivity(intent0);
+                if (Backendless.UserService.CurrentUser() != null) {
+                    Intent intent0 = new Intent(this, OfferCreateActivity.class);
+                    startActivity(intent0);
+                } else {
+                    Toast.makeText(MainActivity.this, "Log in before making an offer!", Toast.LENGTH_SHORT).show();
+                    Intent intentFail = new Intent (this, LoginActivity.class);
+                    startActivity(intentFail);
+                }
+
                 break;
             case 1:
                 //Intent intent1 = new Intent(this,MainActivity.class);
@@ -175,6 +168,8 @@ public class MainActivity extends AppCompatActivity
             case 4:
                 Intent intent4 = new Intent(this, RegisterActivity.class);
                 startActivity(intent4);
+                break;
+            case 5:
                 break;
         }
     }
@@ -210,9 +205,10 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_message) {
+        /*if (id == R.id.action_message) {
             return true;
-        }
+        }*/
+
         if (id == R.id.action_search) {
             return true;
         }
@@ -226,6 +222,4 @@ public class MainActivity extends AppCompatActivity
 
         Toast.makeText(this, R.string.AlphaDisabled, Toast.LENGTH_SHORT).show();
     }
-
 }
-

@@ -47,4 +47,17 @@
     <string name="waiting_for_template">Waiting for %s to accept invitation...</string>
     <string name="will_do_later">Will Add Later</string>
     <string name="AlphaDisabled">Currently Disabled in Alpha</string>
+
+    <string-array name="offernames">
+        <item>Offer1</item>
+        <item>Offer2</item>
+        <item>Offer3</item>
+        <item>Offer4</item>
+        <item>Offer5</item>
+        <item>Offer6</item>
+        <item>Offer7</item>
+        <item>Offer8</item>
+        <item>Offer9</item>
+        <item>Offer10</item>
+    </string-array>
 </resources>

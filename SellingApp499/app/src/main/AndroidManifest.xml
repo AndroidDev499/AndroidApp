@@ -44,10 +44,6 @@
             android:name="eulee.AndroidSellTap.OfferCreateActivity"
             android:parentActivityName="eulee.AndroidSellTap.MainActivity" />
 
-        <activity
-            android:name="eulee.AndroidSellTap.SellTapOfferListingActivity"
-            android:parentActivityName="eulee.AndroidSellTap.MainActivity" />
-
         <activity android:name="eulee.AndroidSellTap.LoginCreate.PasswordRecoveryRequestedActivity" />
         <activity
             android:name="eulee.AndroidSellTap.LoginCreate.RegisterActivity"

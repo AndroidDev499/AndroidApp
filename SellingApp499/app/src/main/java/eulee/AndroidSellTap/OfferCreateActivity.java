@@ -1,5 +1,7 @@
 package eulee.AndroidSellTap;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Random;
 
 import android.content.Intent;
@@ -12,9 +14,11 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.backendless.Backendless;
 import com.backendless.async.callback.AsyncCallback;
+import com.backendless.async.callback.BackendlessCallback;
 import com.backendless.exceptions.BackendlessFault;
 import com.backendless.files.BackendlessFile;
 
@@ -25,7 +29,7 @@ import eulee.sellingapp499.R;
 public class OfferCreateActivity extends AppCompatActivity {
 
     private Toolbar mToolbar;
-    static final int CAMERA_REQUEST = 1888;
+    static final int CAMERA_REQUEST = 1;
 
     ImageView imageView1;
     //ImageView imageView2;
@@ -39,6 +43,7 @@ public class OfferCreateActivity extends AppCompatActivity {
 
     int randomNumber;
     String fileName;
+    String mCurrentPhotoPath;
 
     private FloatingActionButton fab;
     private Button creationButton;
@@ -59,9 +64,6 @@ public class OfferCreateActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
         imageView1 = (ImageView) this.findViewById(R.id.imageView1);
-        //imageView2 = (ImageView) this.findViewById(R.id.imageView2);
-        //imageView3 = (ImageView) this.findViewById(R.id.imageView3);
-        //imageView4 = (ImageView) this.findViewById(R.id.imageView4);
         title = (EditText) this.findViewById(R.id.editTextTitle);
         description = (EditText) this.findViewById(R.id.editTextDesc);
         price = (EditText) this.findViewById(R.id.editTextPrice);
@@ -72,7 +74,7 @@ public class OfferCreateActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
-                startActivityForResult(cameraIntent, CAMERA_REQUEST);
+                        startActivityForResult(cameraIntent, CAMERA_REQUEST);
             }
 
         });
@@ -95,29 +97,14 @@ public class OfferCreateActivity extends AppCompatActivity {
         if (requestCode == CAMERA_REQUEST && resultCode == RESULT_OK) {
             photo = (Bitmap) data.getExtras().get("data");
 
+
             imageView1.setImageBitmap(photo);
-
-            //add images 2-4 later
-            /*if (imageView1.getDrawable() == null) {
-                imageView1.setImageBitmap(photo);
-            } else if (imageView2.getDrawable() == null) {
-                imageView2.setImageBitmap(photo);
-            } else if (imageView3.getDrawable() == null) {
-                imageView3.setImageBitmap(photo);
-            } else if(imageView4.getDrawable() == null) {
-                imageView4.setImageBitmap(photo);
-            }*/
         }
-
-        //if (imageView4.getDrawable() != null) {
-        //    fab.setVisibility(View.INVISIBLE);
-        //}
     }
 
     public void saveOfferImage() {
-        Random random = new Random();
-        randomNumber = random.nextInt ();
-        fileName = "st_" + randomNumber + "_1";
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        fileName = "st_" + timeStamp + "_1.jpg"; //.png
 
         Backendless.Files.Android.upload(photo,
                 Bitmap.CompressFormat.PNG, 100,
@@ -126,10 +113,12 @@ public class OfferCreateActivity extends AppCompatActivity {
                 new AsyncCallback<BackendlessFile>() {
                     @Override
                     public void handleResponse(BackendlessFile response) {
+                        Toast.makeText(getApplicationContext(), "Picture Taken", Toast.LENGTH_LONG).show();
                     }
 
                     @Override
                     public void handleFault(BackendlessFault fault) {
+                        Toast.makeText(OfferCreateActivity.this, fault.toString(), Toast.LENGTH_SHORT).show();
                     }
                 });
     }
@@ -140,25 +129,28 @@ public class OfferCreateActivity extends AppCompatActivity {
             offer.setTitle(title.getText().toString());
         }
         if (price != null) {
-            offer.setPrice(Double.parseDouble(price.getText().toString()));
+            offer.setPrice(Integer.parseInt(price.getText().toString()));
         }
         if (description != null) {
             offer.setDescription(description.getText().toString());
         }
-        offer.setImage1( "https://api.backendless.com/" + Defaults.APPLICATION_ID + "/" + Defaults.VERSION + "/files/" + "offerImages" + "/" + fileName);
+        if (Backendless.UserService.CurrentUser() != null) {
+            offer.setUserCreated(Backendless.UserService.CurrentUser());
+        }
+        offer.setImage1("https://api.backendless.com/" + Defaults.APPLICATION_ID + "/" + Defaults.VERSION + "/files/" + "offerImages" + "/" + fileName);
 
 
-        Backendless.Persistence.save(offer, new AsyncCallback<SellTapOffer>() {
+
+        Backendless.Persistence.save(offer, new BackendlessCallback<SellTapOffer>() {
             public void handleResponse(SellTapOffer response) {
 // new Contact instance has been saved
             }
 
             public void handleFault(BackendlessFault fault) {
-// an error has occurred, the error code can be retrieved with fault.getCode()
+                Toast.makeText(OfferCreateActivity.this, fault.toString(), Toast.LENGTH_SHORT).show();
             }
         });
 
     }
-
 
 }

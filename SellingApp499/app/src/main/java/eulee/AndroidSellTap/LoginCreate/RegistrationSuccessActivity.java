@@ -26,6 +26,7 @@ public class RegistrationSuccessActivity extends AppCompatActivity
     mToolbar = (Toolbar) findViewById(R.id.toolbar_actionbar);
     setSupportActionBar(mToolbar);
     getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+    getSupportActionBar().setDisplayShowTitleEnabled(false);
 
     initUI();
   }

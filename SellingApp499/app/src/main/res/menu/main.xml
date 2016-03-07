@@ -1,6 +1,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+    <!--
     <item
         android:id="@+id/action_message"
         android:title="@string/action_message"
@@ -8,11 +9,13 @@
         android:icon="@drawable/message"
         android:onClick="clickedAlphaMessage"/>
 
+        -->
+
     <item
         android:id="@+id/action_search"
         android:title="@string/action_search"
         app:showAsAction="ifRoom"
-        android:icon="@drawable/search"
+        android:icon="@drawable/menu_search"
         android:onClick="clickedAlphaMessage"/>
 
 

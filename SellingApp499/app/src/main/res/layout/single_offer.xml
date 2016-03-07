@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <ImageButton
+        android:id="@+id/imageView"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:scaleType="centerCrop"
+        android:src="@drawable/avatar" />
+
+    <RelativeLayout
+        android:layout_width="143dp"
+        android:layout_height="50dp"
+        android:layout_below="@id/imageView"
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/rectangle_border">
+
+        <TextView
+            android:id="@+id/imageTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingTop="8dp"
+            android:paddingEnd="8dp"
+            android:paddingStart="8dp"
+            android:text="Title"
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/imageTextView2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentBottom="true"
+            android:layout_below="@id/imageTextView"
+            android:paddingStart="8dp"
+            android:paddingEnd="6dp"
+            android:text="Creator"
+            android:textSize="12sp" />
+    </RelativeLayout>
+</RelativeLayout>
