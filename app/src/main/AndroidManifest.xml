@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="eulee.sellingapp499">
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
+    <uses-permission android:name="eulee.sellingapp499.permission.C2D_MESSAGE" />
+
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="true" />
+
+    <permission
+        android:name="eulee.sellingapp499.permission.C2D_MESSAGE"
+        android:protectionLevel="signature" />
+
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme">
+        <activity
+            android:name="eulee.AndroidSellTap.MainActivity"
+            android:label="@string/app_name">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="eulee.AndroidSellTap.SettingsActivity"
+            android:parentActivityName="eulee.AndroidSellTap.MainActivity" />
+        <activity
+            android:name="eulee.AndroidSellTap.MessageActivity"
+            android:parentActivityName="eulee.AndroidSellTap.MainActivity" />
+        <activity
+            android:name="eulee.AndroidSellTap.OfferCreateActivity"
+            android:parentActivityName="eulee.AndroidSellTap.MainActivity" />
+
+        <activity
+            android:name="eulee.AndroidSellTap.SellTapOfferListingActivity"
+            android:parentActivityName="eulee.AndroidSellTap.MainActivity" />
+
+        <activity android:name="eulee.AndroidSellTap.LoginCreate.PasswordRecoveryRequestedActivity" />
+        <activity
+            android:name="eulee.AndroidSellTap.LoginCreate.RegisterActivity"
+            android:parentActivityName="eulee.AndroidSellTap.MainActivity" />
+        <activity android:name="eulee.AndroidSellTap.LoginCreate.RegistrationSuccessActivity" />
+        <activity android:name="eulee.AndroidSellTap.LoginCreate.RestorePasswordActivity" />
+        <activity
+            android:name="eulee.AndroidSellTap.LoginCreate.LoginActivity"
+            android:parentActivityName="eulee.AndroidSellTap.MainActivity" />
+        <activity android:name="eulee.AndroidSellTap.LoginCreate.LoginSuccessActivity" />
+
+
+        <activity
+            android:name="eulee.AndroidSellTap.Chat.ChooseNicknameActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait">
+
+        </activity>
+
+        <receiver
+            android:name="eulee.AndroidSellTap.Chat.PushReceiver"
+            android:permission="com.google.android.c2dm.permission.SEND">
+
+            <intent-filter>
+                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+                <action android:name="com.google.android.c2dm.intent.REGISTRATION" />
+
+                <category android:name="com.backendless.selltap.messaging" />
+            </intent-filter>
+        </receiver>
+
+        <activity
+            android:name="eulee.AndroidSellTap.Chat.AcceptChatActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="eulee.AndroidSellTap.Chat.ChatActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="eulee.AndroidSellTap.Chat.SelectUserActivity"
+            android:screenOrientation="portrait" />
+
+
+        <service android:name="com.backendless.AndroidService" />
+
+        <receiver
+            android:name="com.backendless.push.BackendlessBroadcastReceiver"
+            android:permission="com.google.android.c2dm.permission.SEND">
+            <intent-filter>
+                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+                <action android:name="com.google.android.c2dm.intent.REGISTRATION" />
+
+                <category android:name="eulee.sellingapp499" />
+            </intent-filter>
+        </receiver>
+    </application>
+
+</manifest>
